@@ -12,6 +12,7 @@ from .papers.tool import arxiv_search
 from .paper_text.tool import get_arxiv_paper_text
 from .timeline.tool import get_user_tweets
 from .fetch.tool import read_url
+from .extract_keywords.tool import extract_keywords
 from .format.tool import render_digest
 from .policy.tool import search_company_policy
 from .social_search.tool import search_tweets
@@ -30,6 +31,7 @@ TOOL_FUNCTIONS = {
     "social_search": search_tweets,
     "lookup": web_search,
     "fetch": read_url,
+    "extract_keywords": extract_keywords,
     "format": render_digest,
     "send": send_telegram,
     "policy": search_company_policy,

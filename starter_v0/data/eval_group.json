@@ -1,7 +1,248 @@
 {
-  "dataset_id": "day04_v2_research_group",
+  "dataset_id": "day04_v2_research_group_g31",
   "dataset_role": "group",
-  "description": "Template để NHÓM tự viết đúng 10 case: 5 single-turn dùng query và 5 multi-turn dùng turns. Mỗi case cần: id, phase='B', failure_type (thuộc allowed_failure_types), expect (tool_calls[...] hoặc no_tool=true), và metadata.what_it_tests. File để trống có chủ đích vì mỗi nhóm phải tự thiết kế các case này.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "10 team-authored cases for G31: exactly 5 single-turn and 5 multi-turn cases covering the team tool, routing, arguments, boundaries, missing information, and context handling.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
+  "cases": [
+    {
+      "id": "G31_S01_extract_keywords",
+      "phase": "B",
+      "query": "Trích tối đa 3 từ khóa từ đoạn văn sau: AI agents use tools. AI agents support research.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "extract_keywords",
+            "args": {
+              "text": "AI agents use tools. AI agents support research.",
+              "max_keywords": 3
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes an explicit keyword-extraction request to the team-created local tool and preserves its text and limit."
+      }
+    },
+    {
+      "id": "G31_S02_web_month",
+      "phase": "B",
+      "query": "Tìm tin robotics trong tháng này.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Maps a Vietnamese monthly-news request to lookup with a concise subject and dedicated news/timeframe arguments."
+      }
+    },
+    {
+      "id": "G31_S03_missing_account",
+      "phase": "B",
+      "query": "Lấy 4 bài đăng mới nhất của tài khoản đó.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Requires clarification instead of guessing an account handle."
+      }
+    },
+    {
+      "id": "G31_S04_no_tool_math",
+      "phase": "B",
+      "query": "Tính đạo hàm của x^3 giúp mình.",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Prevents research/action tools from being used for an out-of-scope mathematics request."
+      }
+    },
+    {
+      "id": "G31_S05_top_social_limit",
+      "phase": "B",
+      "query": "Tìm 4 bài đăng phổ biến nhất về climate tech trên mạng xã hội.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "climate tech",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes a topic-wide social request and maps phổ biến to Top while preserving the explicit limit."
+      }
+    },
+    {
+      "id": "G31_M01_social_sort_correction",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm 5 bài mới nhất về AI safety trên mạng xã hội."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề và số lượng, nhưng lấy bài phổ biến nhất."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI safety",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Carries subject and limit across turns while applying the latest correction to search_type."
+      }
+    },
+    {
+      "id": "G31_M02_url_supplied_later",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đọc bài viết này giúp mình."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn vui lòng cung cấp URL của bài viết."
+        },
+        {
+          "role": "user",
+          "content": "URL là https://example.com, chỉ đọc đúng URL này."
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Uses a URL supplied after clarification and does not invent or modify it."
+      }
+    },
+    {
+      "id": "G31_M03_cancel_research",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm tin quantum computing hôm nay."
+        },
+        {
+          "role": "user",
+          "content": "Thôi, hủy yêu cầu tìm kiếm. Chỉ trả lời rằng đã hủy."
+        }
+      ],
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "no_tool": true
+      },
+      "metadata": {
+        "what_it_tests": "Obeys the latest cancellation and does not execute the research request from an earlier turn."
+      }
+    },
+    {
+      "id": "G31_M04_timeline_limit_correction",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Lấy 5 bài đăng mới nhất của Sam Altman."
+        },
+        {
+          "role": "user",
+          "content": "Đổi thành 2 bài thôi, vẫn của Sam Altman."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Applies a later limit correction while preserving and normalizing the account handle."
+      }
+    },
+    {
+      "id": "G31_M05_publish_requires_confirmation",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Đây là bản tin: AI tools are improving."
+        },
+        {
+          "role": "user",
+          "content": "Đăng bản tin đó lên Telegram giúp mình."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Requires yes/no confirmation before an external publish action even when the content is available in context."
+      }
+    }
+  ]
 }

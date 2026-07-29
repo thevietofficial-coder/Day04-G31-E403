@@ -1,63 +1,60 @@
-# starter_v0 — tool declarations (intentionally vague).
-# Names and descriptions here are a rough first draft. Routing rules, name->handle
-# mapping, arg conventions (news/timeframe/Top), and the send-confirmation boundary
-# are NOT spelled out anywhere yet. Your job is to make these declarations + the
-# system prompt good enough that the agent routes correctly on the eval.
+# Tool declarations optimized from observed v0 routing and argument failures.
+# Descriptions define intent boundaries, required information, and safe actions.
 #
 # If you rename a tool, keep the name in sync across:
 #   this file  ->  tools/__init__.py (TOOL_FUNCTIONS)  ->  data/eval_base.json + data/eval_research_extension.json
 tools:
   # ---------------- Core tools ----------------
   - name: clarify
-    description: "Gửi một câu hỏi cho người dùng."
+    description: "Pause and ask for a required value that is missing, or for explicit confirmation before an external side effect. Use text for a missing handle/URL, yes_no for confirmation, and choice only with concrete options. Do not call another tool in the same response."
     parameters:
       type: object
       properties:
-        question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
-        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
+        question: {type: string, default: "", description: "A concise question naming the exact missing value or action to confirm."}
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Use text for missing information, yes_no for confirmation, and choice only with explicit options."}
+        options: {type: array, default: [], items: {type: string}, description: "Choices; provide only when response_type is choice."}
       required: [question]
 
   - name: timeline
-    description: "Lấy các bài đăng gần đây."
+    description: "Fetch recent posts from one specific account. Use only when the user identifies an account; if the handle is missing, call clarify instead. Do not use for topic-wide social search."
     parameters:
       type: object
       properties:
-        screenname: {type: string, default: "", description: "Tên tài khoản"}
-        limit: {type: integer, default: 5, description: "Số lượng"}
+        screenname: {type: string, default: "", description: "Account handle without the leading @. Never guess a missing handle."}
+        limit: {type: integer, default: 5, description: "Number of posts; preserve an explicit user limit."}
       required: [screenname]
 
   - name: social_search
-    description: "Tìm trên mạng xã hội."
+    description: "Search social posts across accounts by topic or keyword. Use for what people are saying about a subject; use timeline for posts from one account."
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Từ khóa"}
-        search_type: {type: string, enum: [Latest, Top], default: "Latest", description: "Cách sắp xếp"}
-        limit: {type: integer, default: 5, description: "Số lượng"}
+        query: {type: string, default: "", description: "The user's social-search subject, kept concise without unnecessary generic words."}
+        search_type: {type: string, enum: [Latest, Top], default: "Latest", description: "Use Top for top/popular/phổ biến requests; otherwise use Latest."}
+        limit: {type: integer, default: 5, description: "Number of posts; preserve an explicit user limit."}
       required: [query]
 
   - name: lookup
-    description: "Tra cứu thông tin trên internet."
+    description: "Search the public web for general information or news. Use topic=news for news/current events and encode recency in timeframe. Do not use for reading a known URL or searching social posts."
     parameters:
       type: object
       properties:
-        query: {type: string, default: "", description: "Truy vấn"}
-        topic: {type: string, enum: [general, news], default: "general", description: "Phân loại"}
-        timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "Khoảng thời gian"}
-        max_results: {type: integer, default: 5, description: "Số kết quả"}
+        query: {type: string, default: "", description: "The user's subject. Keep it concise; do not append 'news' when topic=news already expresses that intent."}
+        topic: {type: string, enum: [general, news], default: "general", description: "Use news for news/current events; otherwise use general."}
+        timeframe: {type: string, enum: [day, week, month, year], default: "week", description: "Map today/hôm nay to day, this week/tuần này to week, and other explicit periods accordingly."}
+        max_results: {type: integer, default: 5, description: "Number of web results; preserve an explicit user limit."}
       required: [query]
 
   - name: fetch
-    description: "Lấy nội dung từ một địa chỉ."
+    description: "Read and extract content from one explicit URL. Never invent a URL. If the user refers to an article/page without providing a URL or prior result, call clarify instead."
     parameters:
       type: object
       properties:
-        url: {type: string, default: "", description: "Địa chỉ"}
+        url: {type: string, default: "", description: "Exact URL supplied by the user or returned by an earlier tool."}
       required: [url]
 
   - name: format
-    description: "Trình bày dữ liệu đã có thành văn bản."
+    description: "Format structured items already retrieved into a digest. This tool does not search, fetch, answer unrelated questions, or invent missing items."
     parameters:
       type: object
       properties:
@@ -77,14 +74,24 @@ tools:
         headline: {type: string, default: "", description: "Tiêu đề"}
       required: [items, template]
 
-  # ---------------- Bonus tools ----------------
-  - name: send
-    description: "Gửi một đoạn văn bản đi."
+  # ---------------- Team-created tools ----------------
+  - name: extract_keywords
+    description: "Extract frequent meaningful keywords from text already supplied by the user or retrieved earlier. Use only for explicit keyword/key-term requests. This tool does not search, fetch, or summarize; if only a URL is available, fetch its text first."
     parameters:
       type: object
       properties:
-        text: {type: string, default: "", description: "Nội dung"}
-        confirmed: {type: boolean, default: false, description: "Cờ xác nhận"}
+        text: {type: string, default: "", description: "The exact available text to analyze; do not invent article content."}
+        max_keywords: {type: integer, default: 8, minimum: 1, maximum: 20, description: "Maximum number of keywords requested by the user."}
+      required: [text]
+
+  # ---------------- Bonus tools ----------------
+  - name: send
+    description: "External action: send the exact text to the configured Telegram destination. Never use this tool to answer the user. Call only after explicit confirmation of the exact send/post action; otherwise call clarify with response_type=yes_no and do not call send."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Exact user-approved content to send; do not invent or rewrite it without approval."}
+        confirmed: {type: boolean, default: false, description: "Set true only when explicit confirmation is already present. Never infer confirmation from the initial request."}
       required: [text]
 
   - name: policy

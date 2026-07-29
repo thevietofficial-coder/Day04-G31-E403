@@ -1,0 +1,757 @@
+{
+  "run_id": "v1-group_B_group_openai_20260729T162225602285",
+  "version": "v1-group",
+  "artifact_version": "v1-group+p5ccb948ba2e9+t4e16db7f2b26",
+  "prompt_hash": "5ccb948ba2e9c966424181944494887765b0bad803dfb196ed99844c078f37ad",
+  "tools_hash": "4e16db7f2b26d22579575fc171c117e1852381a9b5cdb41829e6b51e4e53181f",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "system_prompt": "C:\\CODE\\AITHUCCHIEN\\LABS\\Day04-G31-E403\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\CODE\\AITHUCCHIEN\\LABS\\Day04-G31-E403\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day04_v2_research_group_g31",
+  "dataset_role": "group",
+  "description": "10 team-authored cases for G31: exactly 5 single-turn and 5 multi-turn cases covering the team tool, routing, arguments, boundaries, missing information, and context handling.",
+  "generated_at": "2026-07-29T16:22:25",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 9,
+    "case_accuracy": 0.9,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 0.9,
+    "multiturn_accuracy": 0.8,
+    "failure_counts": {
+      "wrong_arg_value": 1
+    },
+    "observed_mismatch_counts": {
+      "wrong_arg_value": 1
+    }
+  },
+  "results": [
+    {
+      "id": "G31_S01_extract_keywords",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Routes an explicit keyword-extraction request to the team-created local tool and preserves its text and limit."
+      },
+      "input": "Trích tối đa 3 từ khóa từ đoạn văn sau: AI agents use tools. AI agents support research.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "extract_keywords",
+            "args": {
+              "text": "AI agents use tools. AI agents support research.",
+              "max_keywords": 3
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "extract_keywords",
+            "args": {
+              "text": "AI agents use tools. AI agents support research.",
+              "max_keywords": 3
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "extract_keywords",
+          "args": {
+            "text": "AI agents use tools. AI agents support research.",
+            "max_keywords": 3
+          },
+          "result": {
+            "tool": "extract_keywords",
+            "keywords": [
+              {
+                "keyword": "agents",
+                "count": 2
+              },
+              {
+                "keyword": "ai",
+                "count": 2
+              },
+              {
+                "keyword": "research",
+                "count": 1
+              }
+            ],
+            "total_terms": 8
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_S02_web_month",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Maps a Vietnamese monthly-news request to lookup with a concise subject and dedicated news/timeframe arguments."
+      },
+      "input": "Tìm tin robotics trong tháng này.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Top Robotics Stocks Worth Investing Right Now for Solid ...",
+                "url": "https://finance.yahoo.com/markets/stocks/articles/top-robotics-stocks-worth-investing-154200515.html",
+                "source": "finance.yahoo.com",
+                "summary": "The Robotics Screen makes it easy to identify high-potential stocks at any given time, just like the ones discussed below. Leveraging advanced tools, the thematic screens identify companies shaping the future, making it easier to capitalize on emerging trends.  \n  \nReady to uncover more transformative thematic investment ideas? Explore 30 cutting-edge investment themes with Zacks Thematic Screens and discover your next big opportunity. [...] NVIDIA released open-source physical AI skills at GTC Taipei and Computex in June to cut robot development costs industry-wide. Collaborative Robotics unveiled a redesigned Proxie mobile robot featuring two-armed manipulation, self-swapping batteries and autonomous task identification, broadening collaborative automation across healthcare, logistics and manufacturing. [...] With physical AI maturing, surgical robotics entering its most competitive era in decades, defense autonomy deepening and space robotic servicing nearing reality, the rest of 2026 and the near term represent a broad opportunity for U.S. robotics stocks.",
+                "score": 0.50432175
+              },
+              {
+                "title": "Samsung Electronics sets up robotics unit amid push into physical AI",
+                "url": "https://www.cnbc.com/2026/07/21/samsung-electronics-sets-up-robotics-unit-amid-push-into-physical-ai-.html",
+                "source": "cnbc.com",
+                "summary": "Samsung Electronics shares rose after the company said Tuesday it is creating a robotics division as the South Korean tech giant seeks new sources of growth.\n\nThe newly created RX, or Robotics eXperience, will consolidate Samsung's robotics capabilities and is intended to drive a mid- to long-term strategy from core tech development to commercialization, the company said in an emailed statement. CEO TM Roh will oversee the division directly.",
+                "score": 0.49245724
+              },
+              {
+                "title": "Agility Robotics plants its flag in Tesla’s backyard",
+                "url": "https://techcrunch.com/2026/07/17/agility-robotics-plants-its-flag-in-teslas-backyard",
+                "source": "techcrunch.com",
+                "summary": "Johnson is currently leading Agility through a reverse-merger that is expected to make it the first pure-play humanoid robot company on the public markets later this year. Founded in 2015 by a group of researchers who developed new techniques that allow robots to safely walk on two legs, Agility is trying to capitalize on its lead over a newer generation of AI-inspired robotic startups like Figure, 1X, the Bot Company, or Sunday Robotics. [...] Unlike many of the newer entrants to the humanoid space, Agility isn’t planning to offer in-home humanoid robots anytime soon. It’s a view that jibes with that of most independent robotics experts, who believe today’s most powerful robots aren’t safe enough for consumer use. Digit operates in a human-free space right now, but the version 5, expected to be unveiled this fall, will have the ability to sense humans and won’t need to be kept in a robot-only zone. [...] While Agility doesn’t have Tesla’s capital, it does have a robot, Digit, that is already useful in the real world. The robot is already generating revenue, carrying totes and bins in manufacturing and warehouse settings for customers like Amazon, GXO, Schaeffler, and Toyota Motor Manufacturing Canada. The company says it has secured $300 million in contract orders for its robots.",
+                "score": 0.44695392
+              },
+              {
+                "title": "Robots Are Coming — But Not Everywhere",
+                "url": "https://sloanreview.mit.edu/article/robots-are-coming-but-not-everywhere",
+                "source": "sloanreview.mit.edu",
+                "summary": "“The ChatGPT moment for robotics is coming,” declared Nvidia CEO Jensen Huang at the Consumer Electronics Show in January 2025. It’s a widespread expectation: that humanoid robots will follow the same explosive adoption curve as generative AI. Our research suggests the opposite. Humanoid robotics will be adopted unevenly, across diverging use cases and geographies. Leaders need to reset their strategies for a more complex, jagged path to scale.",
+                "score": 0.44594026
+              },
+              {
+                "title": "Ag Progress Days to debut FIRA Robotics Village, showcasing robotics, automation | Penn State University",
+                "url": "https://www.psu.edu/news/agricultural-sciences/story/ag-progress-days-debut-fira-robotics-village-showcasing-robotics",
+                "source": "psu.edu",
+                "summary": "Among the technologies on display will be an autonomous robot that works alongside people by carrying, following or towing materials to improve efficiency in production environments, as well as an autonomous tomato-harvesting robot. [...] “One of the biggest challenges for robotics startups is getting new technologies in front of the people who can benefit from them most,” said Kevin Dowling, managing director of the Robotics Factory at Innovation Works. “The FIRA Robotics Village allows innovators to demonstrate real-world solutions, gather valuable feedback from producers and build the partnerships needed to move promising technologies from development to deployment at scale.” [...] Located in and around the Exhibit Building on West 5th Street at the Russell E. Larson Agricultural Research Center at Rock Springs, the exhibit will spotlight robotics and autonomous technologies applicable to a wide range of agricultural sectors, including dairy, specialty crops, forestry, greenhouse production and field crop agriculture.",
+                "score": 0.43395805
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_S03_missing_account",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Requires clarification instead of guessing an account handle."
+      },
+      "input": "Lấy 4 bài đăng mới nhất của tài khoản đó.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Vui lòng cung cấp tên tài khoản mà bạn muốn lấy bài đăng.",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Vui lòng cung cấp tên tài khoản mà bạn muốn lấy bài đăng.",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Vui lòng cung cấp tên tài khoản mà bạn muốn lấy bài đăng.",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_S04_no_tool_math",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Prevents research/action tools from being used for an out-of-scope mathematics request."
+      },
+      "input": "Tính đạo hàm của x^3 giúp mình.",
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Yêu cầu của bạn nằm ngoài phạm vi khả năng của tôi. Tuy nhiên, đạo hàm của hàm số \\(x^3\\) là \\(3x^2\\). Nếu bạn cần thêm thông tin hoặc có câu hỏi khác, hãy cho tôi biết!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G31_S05_top_social_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Routes a topic-wide social request and maps phổ biến to Top while preserving the explicit limit."
+      },
+      "input": "Tìm 4 bài đăng phổ biến nhất về climate tech trên mạng xã hội.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "climate tech",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "climate tech",
+              "search_type": "Top",
+              "limit": 4
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "climate tech",
+            "search_type": "Top",
+            "limit": 4
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "climate tech",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "Call for Applications: Oxford Saïd Global Climate Tech Challenge 2026 for High School Students &amp; Teachers",
+                "summary": "Call for Applications: Oxford Saïd Global Climate Tech Challenge 2026 for High School Students &amp; Teachers\nA global competition that brings students and educators together to design practical, technology-driven solutions for climate change.\nTo Apply: Link in Reply https://t.co/CoVVXKxLW6",
+                "url": "https://x.com/africaelbowroom/status/2082037252914282922",
+                "source": "@africaelbowroom",
+                "date": "Tue Jul 28 09:35:38 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "15"
+                }
+              },
+              {
+                "title": "Climate Tech IPOs in 2026: What 18 Listings Really Signal",
+                "summary": "Climate Tech IPOs in 2026: What 18 Listings Really Signal\nhttps://t.co/6H5OEkDDMz\nFor founders, investors and prospective shareholders, the practical conclusion is narrower. Capital is available for climate businesses that can demonstrate revenue, contracted demand, infrastructure progress or a credible route to durable cash flow.\n\nA compelling technology story alone is no longer enough. The 2026 pipeline should therefore be read as a test of commercial maturity and pricing discipline, not as a return to the broad speculative IPO market of 2021.\n\nSources: Quasa Media, Net Zero Insights, State of Climate Tech, SEC / Writer: Slava Vasipenok",
+                "url": "https://x.com/quasagroup/status/2082205196445171887",
+                "source": "@quasagroup",
+                "date": "Tue Jul 28 20:42:58 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "49"
+                }
+              },
+              {
+                "title": "Kenya's startups raised $157M across 16 publicly reported funding deals in H1 2026.",
+                "summary": "Kenya's startups raised $157M across 16 publicly reported funding deals in H1 2026.\n\nFrom https://t.co/1C7N6G1qqm's $53M to CrossBoundary Energy's $40M, climate tech, clean energy, agritech &amp; fintech are driving innovation.\n\nFull list &amp; founders: https://t.co/EfRw2bMrm8 https://t.co/cua1hza0Bg",
+                "url": "https://x.com/Samtashmedia/status/2079994166122033462",
+                "source": "@Samtashmedia",
+                "date": "Wed Jul 22 18:17:08 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "27"
+                }
+              },
+              {
+                "title": "🚀JUST IN: China’s rain-making cannon just fired.",
+                "summary": "🚀JUST IN: China’s rain-making cannon just fired.\nThe blast scattered ducks and dogs like incoming shells.\nLive footage shows animals bolting in panic.\nWill climate tech destroy wildlife trust first?\n\nhttps://t.co/4oJKvdTog2",
+                "url": "https://x.com/cryptoleek/status/2081897510407188921",
+                "source": "@cryptoleek",
+                "date": "Tue Jul 28 00:20:20 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "400"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_M01_social_sort_correction",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Carries subject and limit across turns while applying the latest correction to search_type."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm 5 bài mới nhất về AI safety trên mạng xã hội."
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề và số lượng, nhưng lấy bài phổ biến nhất."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI safety",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI safety",
+              "search_type": "Top",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI safety",
+            "search_type": "Top",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI safety",
+            "search_type": "Top",
+            "items": [
+              {
+                "title": "Check it. KAIST wins Microsoft AI safety grant as Korea’s sole EXTRA participant https://t.co/k4iCLugBml #tech #digital ",
+                "summary": "Check it. KAIST wins Microsoft AI safety grant as Korea’s sole EXTRA participant https://t.co/k4iCLugBml #tech #digital #privacy #crypto #ai",
+                "url": "https://x.com/kuriharan/status/2082364249544737073",
+                "source": "@kuriharan",
+                "date": "Wed Jul 29 07:15:00 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 1,
+                  "views": "129"
+                }
+              },
+              {
+                "title": "🚨 1,178 EMPLOYEES FROM FRONTIER AI LABS JUST SIGNED A JOINT STATEMENT. THEY ARE ASKING THE US GOVERNMENT TO BUILD TOOLS ",
+                "summary": "🚨 1,178 EMPLOYEES FROM FRONTIER AI LABS JUST SIGNED A JOINT STATEMENT. THEY ARE ASKING THE US GOVERNMENT TO BUILD TOOLS TO \"PACE THE RATE OF AI ADVANCEMENT.\"\n\nThese are core researchers from OpenAI, Google DeepMind, Anthropic, Meta, and other leading labs.\n\nThe statement reads: \"AI could bring about a radically better world, but that outcome is not guaranteed. Frontier AI companies believe they may be close to a critical point at which AI can automate AI research. The real risk is that capability gains may rapidly accelerate beyond our ability to understand and control.\"\n\nThe signatories include many of the most influential figures in AI safety and alignment \n\nJohn Schulman (Chief Scientist, Thinking Machines)\n\nJakub Pachocki (Chief Scientist, OpenAI)\n\nJared Kaplan (Co-founder and Chief Science Officer, Anthropic)\n\nDario Amodei (CEO, Anthropic)\n\nMark Chen (Chief Research Officer, OpenAI)\n\nJasjeet Sekhon (Chief Strategy Officer, Google DeepMind)\n\nAnca Dragan (VP, AI Safety and Alignment, Google)\n\nWojciech Zaremba (Head of OpenAI Foundation)\n\nOne personal comment cuts straight to the point:\n\n\"The world is in a deadly race to an intelligence explosion. AI's ability to create better AI will reach a critical point, like an uncontrolled nuclear chain reaction. Slowing down would buy us precious time. But no individual actor will unilaterally stop. To survive, we must coordinate and slow this race.\"\n\nLeo Gao, Researcher at OpenA",
+                "url": "https://x.com/AItheoryx/status/2082362236694118798",
+                "source": "@AItheoryx",
+                "date": "Wed Jul 29 07:07:00 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "30"
+                }
+              },
+              {
+                "title": "https://t.co/RT672SpmDg",
+                "summary": "https://t.co/RT672SpmDg\n\nSam Altman Advocates for Pacing AI Development Post-Security Incident\n\nA model exploiting zero-day flaws sharpens concerns about deployment safety and readiness.\n\n#AI #AISafety #Cybersecurity",
+                "url": "https://x.com/DailyAIWireNews/status/2082377727131185642",
+                "source": "@DailyAIWireNews",
+                "date": "Wed Jul 29 08:08:33 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "18"
+                }
+              },
+              {
+                "title": "Featuring intelligent liquid cooling and AI safety detection, it delivers full-spectrum peak shaving and frequency regul",
+                "summary": "Featuring intelligent liquid cooling and AI safety detection, it delivers full-spectrum peak shaving and frequency regulation—injecting surging momentum into the next-generation power grid! 🌱✨\n\n#EnergyStorage #BoostESS #CleanEnergy #RenewableEnergy #TechInnovation https://t.co/ET6T4sBzJL",
+                "url": "https://x.com/HaileyGemmaaaa/status/2082364133182427333",
+                "source": "@HaileyGemmaaaa",
+                "date": "Wed Jul 29 07:14:32 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "🚨 BREAKING: Anthropic has backed a new AI safety petition signed by its CEO, co-founders, and senior staff.",
+                "summary": "🚨 BREAKING: Anthropic has backed a new AI safety petition signed by its CEO, co-founders, and senior staff.\n\nThe company says its recent research supports deliberately pacing frontier AI development to give society more time to prepare. https://t.co/NdS0qslat8",
+                "url": "https://x.com/RaghavKatta15/status/2082365935550332971",
+                "source": "@RaghavKatta15",
+                "date": "Wed Jul 29 07:21:42 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "7"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_M02_url_supplied_later",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Uses a URL supplied after clarification and does not invent or modify it."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đọc bài viết này giúp mình."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn vui lòng cung cấp URL của bài viết."
+        },
+        {
+          "role": "user",
+          "content": "URL là https://example.com, chỉ đọc đúng URL này."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://example.com"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "fetch",
+          "args": {
+            "url": "https://example.com"
+          },
+          "result": {
+            "tool": "read_url",
+            "url": "https://example.com",
+            "items": [
+              {
+                "title": "Example Domain",
+                "url": "https://example.com",
+                "source": "example.com",
+                "summary": "# Example Domain\n\nThis domain is for use in documentation examples without needing permission. Avoid use in operations.\n\n[Learn more](https://iana.org/domains/example)"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_M03_cancel_research",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Obeys the latest cancellation and does not execute the research request from an earlier turn."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm tin quantum computing hôm nay."
+        },
+        {
+          "role": "user",
+          "content": "Thôi, hủy yêu cầu tìm kiếm. Chỉ trả lời rằng đã hủy."
+        }
+      ],
+      "expect": {
+        "no_tool": true
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Yêu cầu tìm kiếm đã bị hủy.",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G31_M04_timeline_limit_correction",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Applies a later limit correction while preserving and normalizing the account handle."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Lấy 5 bài đăng mới nhất của Sam Altman."
+        },
+        {
+          "role": "user",
+          "content": "Đổi thành 2 bài thôi, vẫn của Sam Altman."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "sama",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": true,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "samaltman",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "wrong_arg_value",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "screenname: expected 'sama', got 'samaltman'"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "samaltman",
+            "limit": 2
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "error": "JSONDecodeError",
+            "message": "Expecting value: line 1 column 1 (char 0)"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G31_M05_publish_requires_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Requires yes/no confirmation before an external publish action even when the content is available in context."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đây là bản tin: AI tools are improving."
+        },
+        {
+          "role": "user",
+          "content": "Đăng bản tin đó lên Telegram giúp mình."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn đăng bản tin \"AI tools are improving\" lên Telegram không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn đăng bản tin \"AI tools are improving\" lên Telegram không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn đăng bản tin \"AI tools are improving\" lên Telegram không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    }
+  ]
+}
